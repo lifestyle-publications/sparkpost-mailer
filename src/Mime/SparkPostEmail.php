@@ -9,25 +9,26 @@ class SparkPostEmail extends Email
     use HasMetadataTrait;
     use HasSubstitutionDataTrait;
 
-    /**
-     * @var string|null
-     */
-    private $campaignId;
-
-    /**
-     * @var string|null
-     */
-    private $description;
-
-    /**
-     * @var array
-     */
-    private $options = [];
+    private ?string $transmissionId = null;
+    private ?string $campaignId = null;
+    private ?string $description= null;
+    private array $options = [];
 
     /**
      * @var array|null [from, subject, text, html, amp_html, reply_to, headers, attachments, inline_images]
      */
-    private $content;
+    private ?array $content = null;
+
+    public function getTransmissionId(): ?string
+    {
+        return $this->transmissionId;
+    }
+
+    public function setTransmissionId(?string $transmissionId): SparkPostEmail
+    {
+        $this->transmissionId = $transmissionId;
+        return $this;
+    }
 
     public function ensureValidity()
     {
