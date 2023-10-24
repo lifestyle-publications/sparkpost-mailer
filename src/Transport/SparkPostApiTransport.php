@@ -62,7 +62,6 @@ class SparkPostApiTransport extends AbstractApiTransport
         $message = $event->getMessage();
 
         $sentMessage = new SentMessage($message, $envelope);
-        $this->doSend($sentMessage);
 
         try {
             $this->doSend($sentMessage);
