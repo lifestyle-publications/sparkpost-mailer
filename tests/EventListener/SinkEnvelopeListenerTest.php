@@ -22,7 +22,7 @@ class SinkEnvelopeListenerTest extends TestCase
 
     public function testSinkEmail()
     {
-        $envelope = new Envelope(Address::fromString('test case <nobody@nowhere.net>'), [
+        $envelope = new Envelope(Address::create('test case <nobody@nowhere.net>'), [
             new Address('gam6itko@gmail.com'),
             new Address('fabien@symfony.com'),
         ]);

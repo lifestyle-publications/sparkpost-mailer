@@ -194,7 +194,7 @@ JSON;
 }
 JSON;
         $email = (new TemplateEmail('black_friday', true))
-            ->to(Address::fromString('Wilma Flintstone <wilma@flintstone.com>'))
+            ->to(Address::create('Wilma Flintstone <wilma@flintstone.com>'))
             ->setSubstitutionData([
                 'discount' => '25%',
             ]);
@@ -220,7 +220,7 @@ JSON;
 }
 JSON;
         $email = (new ABTestEmail('password_reset'))
-            ->to(Address::fromString('Wilma Flintstone <wilma@flintstone.com>'));
+            ->to(Address::create('Wilma Flintstone <wilma@flintstone.com>'));
         yield [
             $email,
             new DelayedEnvelope($email),
