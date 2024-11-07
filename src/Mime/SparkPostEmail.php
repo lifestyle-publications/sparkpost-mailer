@@ -30,7 +30,7 @@ class SparkPostEmail extends Email
         return $this;
     }
 
-    public function ensureValidity()
+    public function ensureValidity(): void
     {
     }
 
