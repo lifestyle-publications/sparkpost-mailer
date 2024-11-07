@@ -5,21 +5,31 @@ namespace Gam6itko\Symfony\Mailer\SparkPost\Test\Transport;
 use Gam6itko\Symfony\Mailer\SparkPost\Transport\SparkPostApiTransport;
 use Gam6itko\Symfony\Mailer\SparkPost\Transport\SparkPostSmtpTransport;
 use Gam6itko\Symfony\Mailer\SparkPost\Transport\SparkPostTransportFactory;
+use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Test\TransportFactoryTestCase;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\TransportFactoryInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @coversDefaultClass \Gam6itko\Symfony\Mailer\SparkPost\Transport\SparkPostTransportFactory
  */
 class SparkPostTransportFactoryTest extends TransportFactoryTestCase
 {
+    private static $mocks = [];
+
     public function getFactory(): TransportFactoryInterface
     {
-        return new SparkPostTransportFactory($this->getDispatcher(), $this->getClient(), $this->getLogger());
+        $client = self::staticMock(HttpClientInterface::class);
+        $dispatcher = self::staticMock(EventDispatcherInterface::class);
+        $logger = self::staticMock(LoggerInterface::class);
+        return new SparkPostTransportFactory($dispatcher, $client, $logger);
     }
 
-    public function supportsProvider(): iterable
+    public static function supportsProvider(): iterable
     {
         yield [
             new Dsn('sparkpost', 'default'),
@@ -67,11 +77,11 @@ class SparkPostTransportFactoryTest extends TransportFactoryTestCase
         ];
     }
 
-    public function createProvider(): iterable
+    public static function createProvider(): iterable
     {
-        $client = $this->getClient();
-        $dispatcher = $this->getDispatcher();
-        $logger = $this->getLogger();
+        $client = self::staticMock(HttpClientInterface::class);
+        $dispatcher = self::staticMock(EventDispatcherInterface::class);
+        $logger = self::staticMock(LoggerInterface::class);
 
         yield [
             new Dsn('sparkpost+api', 'default', self::USER),
@@ -121,7 +131,7 @@ class SparkPostTransportFactoryTest extends TransportFactoryTestCase
         }
     }
 
-    public function unsupportedSchemeProvider(): iterable
+    public static function unsupportedSchemeProvider(): iterable
     {
         yield [
             new Dsn('sparkpost+http', 'default', self::USER),
@@ -129,12 +139,21 @@ class SparkPostTransportFactoryTest extends TransportFactoryTestCase
         ];
     }
 
-    public function incompleteDsnProvider(): iterable
+    public static function incompleteDsnProvider(): iterable
     {
         yield [new Dsn('sparkpost+api', 'default')];
 
         yield [new Dsn('sparkpost+smtp', 'default')];
 
         yield [new Dsn('sparkpost+smtp', 'default', self::USER)];
+    }
+
+    private static function staticMock(string $className): MockObject
+    {
+        if (isset(self::$mocks[$className])) {
+            return self::$mocks[$className];
+        }
+        $generator = new Generator();
+        return $generator->getMock($className, [], [], '', false);
     }
 }
