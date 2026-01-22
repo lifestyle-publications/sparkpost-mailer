@@ -137,6 +137,7 @@ class SparkPostApiTransport extends AbstractApiTransport
 
     private function buildContent(Email $email, Envelope $envelope): array
     {
+        //todo here we need to be able to specify our CCs and BCCs
         if ($email instanceof SparkPostEmail && $email->getContent()) {
             return $email->getContent();
         }
@@ -149,6 +150,9 @@ class SparkPostApiTransport extends AbstractApiTransport
                 'email' => $from->getAddress(),
             ]),
             'subject'     => $email->getSubject(),
+            'headers'     => [
+                'cc' => $email->getCc(),
+            ],
             'text'        => $email->getTextBody(),
             'html'        => $email->getHtmlBody(),
             'replyTo'     => $email->getReplyTo(),
